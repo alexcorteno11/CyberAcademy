@@ -5,7 +5,7 @@ using CyberAcademy.Dominio.Sistema;
 namespace CyberAcademy.Dominio.Juego
 {
 
-    public static class CreadorDeNiveles    
+    public static class CreadorDeNivel1    
     {
         public static Nivel CrearNivel1()
         {

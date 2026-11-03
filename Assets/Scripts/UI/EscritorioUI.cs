@@ -1,7 +1,4 @@
-
 using CyberAcademy.Dominio.Juego;
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,7 +12,7 @@ namespace CyberAcademy.UI
         [SerializeField] private ControladorNivel1 controladorNivel1;
        private void Start()
         {
-            var nivel = CreadorDeNiveles.CrearNivel1();
+            var nivel = CreadorDeNivel1.CrearNivel1();
             panelMision.Mostrar(nivel.Mision);
             controladorNivel1.Iniciar(nivel);
             iconoCorreo.onClick.AddListener(() => ventanaCorreo.Abrir());
