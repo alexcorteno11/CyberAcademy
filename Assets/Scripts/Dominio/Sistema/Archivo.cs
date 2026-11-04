@@ -1,9 +1,5 @@
 namespace CyberAcademy.Dominio.Sistema
 {
-    public enum EstadoArchivo
-    {
-        Sano, Infectado, Cifrado
-    }
     public class Archivo
     {
         public string Nombre { get; private set; }
