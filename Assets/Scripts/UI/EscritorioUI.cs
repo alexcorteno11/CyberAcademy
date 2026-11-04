@@ -21,6 +21,7 @@ namespace CyberAcademy.UI
             controladorNivel1.Iniciar(nivel);
             iconoCorreo.onClick.AddListener(() => ventanaCorreo.Abrir());
             controladorNivel1.NivelTerminado += AlTerminarNivel;
+            controladorNivel1.ReintentoSolicitado += AlReintentar;
         }
 
         private void AlTerminarNivel()
@@ -28,17 +29,25 @@ namespace CyberAcademy.UI
             bool nivelDesbloqueado = campana.nuevoDesbloqueo();
             ventanaCorreo.Cerrar();
             campana.ReiniciarNivelActual();
-            var nivel = campana.NivelActual;
-            panelMision.Mostrar(nivel.Mision);
-            controladorNivel1.Iniciar(nivel);
-            Debug.Log($"Nivel superado: {nivelDesbloqueado}");
-
+            IniciarNivelActual();
         }
 
         private void OnDestroy()
         {
             iconoCorreo.onClick.RemoveAllListeners();
             controladorNivel1.NivelTerminado -= AlTerminarNivel;
+            controladorNivel1.ReintentoSolicitado -= AlReintentar;
+        }
+
+        private void IniciarNivelActual()
+        {
+            panelMision.Mostrar(campana.NivelActual.Mision);
+            controladorNivel1.Iniciar(campana.NivelActual);
+        }
+        private void AlReintentar()
+        {
+            campana.ReiniciarNivelActual();
+            IniciarNivelActual();
         }
     }
 }

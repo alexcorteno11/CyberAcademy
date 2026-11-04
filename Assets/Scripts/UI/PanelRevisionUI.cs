@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine.UI;
 using CyberAcademy.Dominio.Sistema;
 using CyberAcademy.Dominio.Juego;
-using System.Linq;
+
 
 namespace CyberAcademy.UI
 {
@@ -17,6 +17,7 @@ namespace CyberAcademy.UI
         [SerializeField] private TMP_Text contadorTexto;
         [SerializeField] private Button botonAnterior;
         [SerializeField] private Button botonSiguiente;
+        [SerializeField] private Button botonVolver;
 
         private IReadOnlyList<Correo> correos;
         private int indice;
@@ -39,16 +40,26 @@ namespace CyberAcademy.UI
                     MostrarActual();
                 }
             });
+            botonVolver.onClick.AddListener(() =>
+            {
+                gameObject.SetActive(false);
+            });
         }
         public void Mostrar(Nivel nivel)
         {
-            gameObject.SetActive(true);
             correos = nivel.Sistema.ObtenerCorreos();
+            if (correos.Count == 0)
+            {
+                Debug.LogWarning("PanelRevisionUI: el nivel no tiene correos que revisar.");
+                return;
+            }
+            gameObject.SetActive(true);
+            
             indice = 0;
             MostrarActual();
         }
 
-        public string NombreDecision(DecisionCorreo decision)
+        private string NombreDecision(DecisionCorreo decision)
         {
             switch (decision)
             {
@@ -57,7 +68,7 @@ namespace CyberAcademy.UI
                 case DecisionCorreo.MarcadoPeligroso:
                     return "Peligroso";
                 case DecisionCorreo.SinDecidir:
-                    return "SinDecidir";
+                    return "Sin Decidir";
             }
             return "";
         }

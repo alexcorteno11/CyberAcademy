@@ -7,12 +7,17 @@ namespace CyberAcademy.UI
     public abstract class ControladorNivelBase : MonoBehaviour
     {
         public event Action NivelTerminado;
+        public event Action ReintentoSolicitado;
 
         public abstract void Iniciar(Nivel nivelRecibido);
 
         protected void NotificarNivelTerminado()
         {
             NivelTerminado?.Invoke();
+        }
+        protected void NotificarReintento()
+        {
+            ReintentoSolicitado?.Invoke();
         }
     }
 

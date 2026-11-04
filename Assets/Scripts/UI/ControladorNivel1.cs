@@ -14,7 +14,8 @@ namespace CyberAcademy.UI
         [SerializeField] private Button botonPeligroso;
         [SerializeField] private PanelRevisionUI panelRevision;
         [SerializeField] private Button botonRevision;
-        [SerializeField] private Button botonContinuar;
+        [SerializeField] private Button botonTerminarNivel;
+        [SerializeField] private Button botonReintentarNivel;
 
         private int indiceActual = 0;
 
@@ -31,12 +32,14 @@ namespace CyberAcademy.UI
             botonSeguro.onClick.RemoveAllListeners();
             botonPeligroso.onClick.RemoveAllListeners();
             botonRevision.onClick.RemoveAllListeners();
-            botonContinuar.onClick.RemoveAllListeners();
+            botonTerminarNivel.onClick.RemoveAllListeners();
+            botonReintentarNivel.onClick.RemoveAllListeners();
 
             botonSeguro.onClick.AddListener(() => ClasificarActual(DecisionCorreo.MarcadoSeguro));
             botonPeligroso.onClick.AddListener(() => ClasificarActual(DecisionCorreo.MarcadoPeligroso));
             botonRevision.onClick.AddListener(() => panelRevision.Mostrar(nivel));
-            botonContinuar.onClick.AddListener(() => NotificarNivelTerminado());
+            botonTerminarNivel.onClick.AddListener(() => NotificarNivelTerminado());
+            botonReintentarNivel.onClick.AddListener(() => NotificarReintento());
             panelCorreo.gameObject.SetActive(true);
             MostrarSiguiente();
         }
@@ -68,6 +71,10 @@ namespace CyberAcademy.UI
             ResultadoAtaque resultado = nivel.EjecutarAtaque();
             panelCorreo.gameObject.SetActive(false);
             panelResultados.Mostrar(nivel);
+            bool superado = nivel.Superado();
+            botonTerminarNivel.gameObject.SetActive(superado);
+            botonReintentarNivel.gameObject.SetActive(!superado);
+
             Debug.Log(resultado.Mensaje);
             if (nivel.Superado())
             {
@@ -76,7 +83,7 @@ namespace CyberAcademy.UI
             }
             else
             {
-
+    
                 Debug.Log("El nivel no fue superado. Vida: " + nivel.Sistema.CalcularVidaSistema() + ", Reputación: " + nivel.Sistema.Reputacion);
             }
            
