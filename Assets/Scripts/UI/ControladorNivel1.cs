@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace CyberAcademy.UI
 {
-    public class  ControladorNivel1: MonoBehaviour
+    public class  ControladorNivel1: ControladorNivelBase
     {
         [SerializeField] private PanelCorreoUI panelCorreo;
         [SerializeField] private PanelResultadosUI panelResultados;
@@ -14,18 +14,31 @@ namespace CyberAcademy.UI
         [SerializeField] private Button botonPeligroso;
         [SerializeField] private PanelRevisionUI panelRevision;
         [SerializeField] private Button botonRevision;
+        [SerializeField] private Button botonContinuar;
 
         private int indiceActual = 0;
 
         private Nivel nivel;
 
-        public void Iniciar(Nivel nivelRecibido)
+        public override void Iniciar(Nivel nivelRecibido)
         {
             nivel = nivelRecibido;
-            MostrarSiguiente();
+            indiceActual = 0;
+            botonSeguro.interactable = true;
+            botonPeligroso.interactable = true;
+            panelResultados.gameObject.SetActive(false);
+            panelRevision.gameObject.SetActive(false);
+            botonSeguro.onClick.RemoveAllListeners();
+            botonPeligroso.onClick.RemoveAllListeners();
+            botonRevision.onClick.RemoveAllListeners();
+            botonContinuar.onClick.RemoveAllListeners();
+
             botonSeguro.onClick.AddListener(() => ClasificarActual(DecisionCorreo.MarcadoSeguro));
             botonPeligroso.onClick.AddListener(() => ClasificarActual(DecisionCorreo.MarcadoPeligroso));
             botonRevision.onClick.AddListener(() => panelRevision.Mostrar(nivel));
+            botonContinuar.onClick.AddListener(() => NotificarNivelTerminado());
+            panelCorreo.gameObject.SetActive(true);
+            MostrarSiguiente();
         }
 
         private void ClasificarActual(DecisionCorreo decision)

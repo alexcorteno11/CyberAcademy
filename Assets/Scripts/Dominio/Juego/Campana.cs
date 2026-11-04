@@ -33,7 +33,7 @@ namespace CyberAcademy.Dominio.Juego
             NivelActual = ConstruirNivel(IndiceNivelActual);
         }
 
-        public bool RegistrarNivelSuperado()
+        public bool nuevoDesbloqueo()
         {
             if(!NivelActual.Superado())
             {
