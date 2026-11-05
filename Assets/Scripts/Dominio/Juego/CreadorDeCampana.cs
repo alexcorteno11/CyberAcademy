@@ -1,4 +1,5 @@
-
+using System;
+using System.Collections.Generic;
 using CyberAcademy.Dominio.Ataques;
 using CyberAcademy.Dominio.Sistema;
 
