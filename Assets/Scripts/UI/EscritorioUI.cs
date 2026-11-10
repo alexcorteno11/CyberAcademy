@@ -1,35 +1,55 @@
 using CyberAcademy.Dominio.Juego;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 namespace CyberAcademy.UI
 {
     public class EscritorioUI : MonoBehaviour
     {
+        [SerializeField] private GameObject canvasEscritorio;
         [SerializeField] private Button iconoCorreo;
         [SerializeField] private VentanaUI ventanaCorreo;
         [SerializeField] private PanelMisionUI panelMision;
         [SerializeField] private ControladorNivelBase controladorNivel1;
 
+        public event Action Cerrado;
+
         private Campana campana;
 
        private void Start()
         {
-            campana = CreadorDeCampana.CrearCampanaBase();
-            var nivel = campana.NivelActual;
-            panelMision.Mostrar(nivel.Mision);
-            controladorNivel1.Iniciar(nivel);
             iconoCorreo.onClick.AddListener(() => ventanaCorreo.Abrir());
             controladorNivel1.NivelTerminado += AlTerminarNivel;
             controladorNivel1.ReintentoSolicitado += AlReintentar;
+            canvasEscritorio.SetActive(false);
+        }
+        public void Update()
+        {
+            if (canvasEscritorio.activeSelf && Input.GetKeyDown(KeyCode.Escape))
+            {
+                Cerrar();
+            }
         }
 
+        public void Abrir(Campana campanaRecibida, int indiceNivel)
+        {
+            this.campana = campanaRecibida;
+            campana.SeleccionarNivel(indiceNivel);
+            canvasEscritorio.SetActive(true);
+            IniciarNivelActual();
+        }
+
+        public void Cerrar()
+        {
+            ventanaCorreo.Cerrar();
+            canvasEscritorio.SetActive(false);
+            Cerrado?.Invoke();
+        }
         private void AlTerminarNivel()
         {
             bool nivelDesbloqueado = campana.nuevoDesbloqueo();
-            ventanaCorreo.Cerrar();
-            campana.ReiniciarNivelActual();
-            IniciarNivelActual();
+            Cerrar();
         }
 
         private void OnDestroy()
