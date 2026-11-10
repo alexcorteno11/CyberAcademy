@@ -135,3 +135,7 @@ crashlytics-build.properties
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# Arte de terceros (Imersa Studios): la licencia prohíbe redistribuirlo.
+# Se ignoran los PNG; los .meta SÍ se suben para conservar los GUID.
+/Assets/Arte/Oficina/**/*.png
