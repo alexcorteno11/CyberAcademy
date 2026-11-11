@@ -36,13 +36,18 @@ namespace CyberAcademy.Hub
 
         private void AlSolicitarInteraccion(int indiceNivel)
         {
-            if (escritorioAbierto)
+            if(escritorioAbierto)
             {
                 return;
             }
+            if (!escritorio.Abrir(campana, indiceNivel))
+            {
+                return;
+            }
+            
             escritorioAbierto = true;
             jugador.ActivarMovimiento(false);
-            escritorio.Abrir(campana, indiceNivel);
+            
 
         }
         private void AlCerrarEscritorio()
