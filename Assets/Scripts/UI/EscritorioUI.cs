@@ -1,6 +1,5 @@
 using CyberAcademy.Dominio.Juego;
 using UnityEngine;
-using UnityEngine.UI;
 using System;
 
 
@@ -9,30 +8,30 @@ namespace CyberAcademy.UI
     public class EscritorioUI : MonoBehaviour
     {
         [SerializeField] private GameObject canvasEscritorio;
-        [SerializeField] private Button iconoCorreo;
-        [SerializeField] private VentanaUI ventanaCorreo;
         [SerializeField] private PanelMisionUI panelMision;
-        [SerializeField] private ControladorNivelBase[] controladoresNivel;
-        private ControladorNivelBase controladorActual;
-
+        [SerializeField] private EntradaNivelEscritorio[] entradas;
 
         public event Action Cerrado;
 
         private Campana campana;
+        private int indiceActual = -1;
 
-        
-       private void Start()
+
+        private void Start()
         {
-            iconoCorreo.onClick.AddListener(() => ventanaCorreo.Abrir());
-            foreach(var controlador in controladoresNivel)
+            
+            for (int i = 0; i < entradas.Length; i++)
             {
-                if(controlador == null)
+                if (entradas[i].Icono == null || entradas[i].Controlador == null)
                 {
                     continue;
                 }
-                controlador.NivelTerminado += AlTerminarNivel;
-                controlador.ReintentoSolicitado += AlReintentar;
 
+                int indice = i;
+                entradas[i].Controlador.NivelTerminado += AlTerminarNivel;
+                entradas[i].Controlador.ReintentoSolicitado += AlReintentar;
+                entradas[i].Icono.onClick.AddListener(() => AlPulsarIcono(indice));
+                entradas[i].Icono.interactable = false;
             }
             
             canvasEscritorio.SetActive(false);
@@ -44,10 +43,15 @@ namespace CyberAcademy.UI
                 Cerrar();
             }
         }
+        
+        private void AlPulsarIcono(int indice)
+        {
+            entradas[indice].Ventana.Abrir();
+        }
 
         public bool Abrir(Campana campanaRecibida, int indiceNivel)
         {
-            if(indiceNivel >= controladoresNivel.Length || controladoresNivel[indiceNivel] == null)
+            if (indiceNivel >= entradas.Length || indiceNivel < 0 || entradas[indiceNivel].Icono == null || entradas[indiceNivel].Controlador == null)
             {
                 return false;
             }
@@ -57,15 +61,38 @@ namespace CyberAcademy.UI
             {
                 return false;
             }
-            controladorActual = controladoresNivel[indiceNivel];
+            indiceActual = indiceNivel;
             canvasEscritorio.SetActive(true);
+            for (int i = 0; i < entradas.Length; i++)
+            {
+                if (entradas[i].Icono == null)
+                {
+                    continue;
+                }
+                if (i == indiceActual)
+                {
+                    entradas[i].Icono.interactable = true;
+                    continue;
+                }
+                entradas[i].Icono.interactable = false;
+                
+            }
+            
             IniciarNivelActual();
             return true;
         }
 
         public void Cerrar()
         {
-            ventanaCorreo.Cerrar();
+            foreach (var entrada in entradas)
+            {
+                if (entrada == null || entrada.Ventana == null)
+                {
+                    continue;
+                }
+                entrada.Ventana.Cerrar();
+            }
+            indiceActual = -1;
             canvasEscritorio.SetActive(false);
             Cerrado?.Invoke();
         }
@@ -77,15 +104,16 @@ namespace CyberAcademy.UI
 
         private void OnDestroy()
         {
-            iconoCorreo.onClick.RemoveAllListeners();
-            foreach (var controlador in controladoresNivel)
+            
+            foreach (var entrada in entradas)
             {
-                if (controlador == null)
+                if (entrada.Icono == null || entrada.Controlador == null)
                 {
                     continue;
                 }
-                controlador.NivelTerminado -= AlTerminarNivel;
-                controlador.ReintentoSolicitado -= AlReintentar;
+                entrada.Icono.onClick.RemoveAllListeners();
+                entrada.Controlador.NivelTerminado -= AlTerminarNivel;
+                entrada.Controlador.ReintentoSolicitado -= AlReintentar;
             }
             
         }
@@ -93,7 +121,7 @@ namespace CyberAcademy.UI
         private void IniciarNivelActual()
         {
             panelMision.Mostrar(campana.NivelActual.Mision);
-            controladorActual.Iniciar(campana.NivelActual);
+            entradas[indiceActual].Controlador.Iniciar(campana.NivelActual);
         }
         private void AlReintentar()
         {
