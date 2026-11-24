@@ -33,24 +33,38 @@ namespace CyberAcademy.Dominio.Juego
             NivelActual = ConstruirNivel(IndiceNivelActual);
         }
 
+
         public bool nuevoDesbloqueo()
         {
-            if(!NivelActual.Superado())
+            // Comportamiento original del Nivel 1
+            // y de los demas niveles.
+            return nuevoDesbloqueo(NivelActual.Superado());
+        }
+
+        public bool nuevoDesbloqueo(bool nivelSuperado)
+        {
+            if (!nivelSuperado)
             {
                 return false;
             }
-            if (IndiceNivelActual < Niveles.Count - 1 && IndiceNivelActual == NivelMaximoDesbloqueado)
+
+            if (IndiceNivelActual < Niveles.Count - 1 &&
+                IndiceNivelActual == NivelMaximoDesbloqueado)
             {
                 NivelMaximoDesbloqueado++;
                 return true;
             }
-            if (IndiceNivelActual == Niveles.Count - 1 && !EstaCompletada)
+
+            if (IndiceNivelActual == Niveles.Count - 1 &&
+                !EstaCompletada)
             {
                 EstaCompletada = true;
                 return true;
             }
+
             return false;
         }
+
         public bool EstaDesbloqueado(int indiceNivel)
         {
             if(indiceNivel < 0 || indiceNivel >= Niveles.Count)

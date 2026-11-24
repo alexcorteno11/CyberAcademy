@@ -96,11 +96,31 @@ namespace CyberAcademy.UI
             canvasEscritorio.SetActive(false);
             Cerrado?.Invoke();
         }
+
         private void AlTerminarNivel()
         {
-            bool nivelDesbloqueado = campana.nuevoDesbloqueo();
+            bool nivelDesbloqueado;
+
+            // El Nivel 2 utiliza la misión de tres cuentas.
+            if (indiceActual == 1 &&
+                entradas[indiceActual].Controlador
+                    is ControladorNivel2 controlador2)
+            {
+                nivelDesbloqueado =
+                    campana.nuevoDesbloqueo(
+                        controlador2.MisionSuperada);
+            }
+            else
+            {
+                // Conservar el funcionamiento original
+                // del Nivel 1 y los demás niveles.
+                nivelDesbloqueado =
+                    campana.nuevoDesbloqueo();
+            }
+
             Cerrar();
         }
+
 
         private void OnDestroy()
         {
